@@ -6,6 +6,7 @@ const navLinks = [
   { href: '/bases', label: '阵型库' },
   { href: '/about', label: '关于' },
   { href: '/contact', label: '联系我' },
+  { href: 'https://clashpost.com/apk', label: '下载', external: true },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -28,6 +29,8 @@ const currentPath = Astro.url.pathname;
       {navLinks.map((link) => (
         <a
           href={link.href}
+          target={link.external ? '_blank' : undefined}
+          rel={link.external ? 'noopener' : undefined}
           class:list={[
             'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-150',
             currentPath === link.href
