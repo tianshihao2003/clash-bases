@@ -1,0 +1,160 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BaseCard from '../../components/BaseCard.astro';
+import FilterBar from '../../components/FilterBar.astro';
+import SearchBox from '../../components/SearchBox.astro';
+import { getCollection } from 'astro:content';
+
+const allBases = (await getCollection('bases'))
+  .sort((a, b) => new Date(b.data.createdAt).getTime() - new Date(a.data.createdAt).getTime());
+
+const basesData = allBases.map((b) => ({
+  id: b.id,
+  name: b.data.name || '',
+  slug: b.id,
+  thLevel: b.data.thLevel,
+  usage: b.data.usage,
+  image: b.data.image,
+  isFeatured: b.data.isFeatured,
+  createdAt: b.data.createdAt,
+  copyLink: b.data.copyLink || '',
+}));
+---
+
+<Layout title="阵型库">
+  <div class="container mx-auto px-6 pt-16 pb-10">
+    <div class="flex items-center gap-2 text-sm mb-4" style="color: var(--text-muted);">
+      <a href="/" class="hover:text-[var(--accent)] transition-colors duration-150">首页</a>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span style="color: var(--text-secondary);">阵型库</span>
+    </div>
+    <h1 class="section-title text-lg mb-5 text-center">阵型库</h1>
+
+    <div class="max-w-md mx-auto mb-5">
+      <SearchBox />
+    </div>
+
+    <FilterBar />
+
+    <div id="bases-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+
+    <div id="empty-state" class="text-center py-16" style="display: none;">
+      <p class="text-sm mb-4" style="color: var(--text-muted);">没有找到匹配的阵型</p>
+      <a href="/bases" class="btn-ghost">查看全部阵型</a>
+    </div>
+  </div>
+</Layout>
+
+<script define:vars={{ basesData }}>
+  const grid = document.getElementById('bases-grid');
+  const empty = document.getElementById('empty-state');
+  const searchInput = document.getElementById('search-input');
+
+  const usageConfig = {
+    war: { label: '部落战', color: 'var(--red)' },
+    farm: { label: '护资源', color: 'var(--accent)' },
+    trophy: { label: '护杯', color: 'var(--blue)' },
+    hybrid: { label: '综合', color: 'var(--purple)' },
+  };
+
+  function formatDate(d) {
+    if (!d) return '';
+    const date = new Date(d);
+    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+  }
+
+  function renderCard(base) {
+    const u = usageConfig[base.usage] || usageConfig.war;
+    const nameHtml = base.name
+      ? `<div class="flex items-center justify-between mb-1.5"><h3 class="font-bold text-sm truncate group-hover:text-[var(--accent)] transition-colors duration-150 flex-1 mr-2">${base.name}</h3><span class="badge flex-shrink-0" style="background: var(--accent-soft); color: var(--accent);">${base.thLevel}本</span></div><span class="badge" style="background: ${u.color}0d; color: ${u.color};">${u.label}</span>`
+      : `<div class="flex items-center gap-2 mb-1.5"><span class="badge" style="background: var(--accent-soft); color: var(--accent);">${base.thLevel}本</span><span class="badge" style="background: ${u.color}0d; color: ${u.color};">${u.label}</span></div>`;
+    const featuredHtml = base.isFeatured ? `<span class="absolute top-2.5 right-2.5 badge" style="background: var(--accent); color: #fff;">精选</span>` : '';
+    const dateHtml = base.createdAt ? `<span class="absolute bottom-2 left-2 text-xs px-1.5 py-0.5 rounded" style="background: rgba(0,0,0,0.5); color: rgba(255,255,255,0.8);">${formatDate(base.createdAt)}</span>` : '';
+
+    return `<a href="/bases/${base.slug}" class="card group block overflow-hidden"><div class="relative overflow-hidden bg-[var(--bg-subtle)]"><img src="${base.image}" alt="${base.name || base.thLevel + '本'}" class="w-full h-44 object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />${featuredHtml}${dateHtml}</div><div class="p-3.5">${nameHtml}</div></a>`;
+  }
+
+  function getFiltered() {
+    const params = new URLSearchParams(window.location.search);
+    const th = params.get('th');
+    const usage = params.get('usage');
+    const q = (params.get('q') || '').toLowerCase();
+
+    let result = basesData;
+    if (th) result = result.filter((b) => b.thLevel === parseInt(th));
+    if (usage) result = result.filter((b) => b.usage === usage);
+    if (q) result = result.filter((b) => (b.name || b.id || '').toLowerCase().includes(q));
+    return result;
+  }
+
+  function updateFilterUI() {
+    const params = new URLSearchParams(window.location.search);
+    const th = params.get('th');
+    const usage = params.get('usage');
+    const q = params.get('q') || '';
+
+    document.querySelectorAll('[data-filter-type]').forEach((el) => {
+      const type = el.getAttribute('data-filter-type');
+      const val = el.getAttribute('data-filter-value');
+      let active = false;
+      if (type === 'th') active = th === val || (!th && val === 'all');
+      if (type === 'usage') active = usage === val || (!usage && val === 'all');
+      el.className = `chip ${active ? 'chip-active' : ''}`;
+    });
+
+    if (searchInput && document.activeElement !== searchInput) searchInput.value = q;
+  }
+
+  function updateURL(params) {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('th');
+    url.searchParams.delete('usage');
+    url.searchParams.delete('q');
+    if (params.th) url.searchParams.set('th', params.th);
+    if (params.usage) url.searchParams.set('usage', params.usage);
+    if (params.q) url.searchParams.set('q', params.q);
+    window.history.pushState({}, '', url.toString());
+    render();
+  }
+
+  function render() {
+    const filtered = getFiltered();
+    grid.innerHTML = filtered.map((b, i) => `<div class="animate-in" style="animation-delay: ${i * 0.03}s">${renderCard(b)}</div>`).join('');
+    empty.style.display = filtered.length === 0 ? 'block' : 'none';
+    grid.style.display = filtered.length === 0 ? 'none' : 'grid';
+    updateFilterUI();
+  }
+
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-filter-type]');
+    if (!el) return;
+    e.preventDefault();
+    const type = el.getAttribute('data-filter-type');
+    const val = el.getAttribute('data-filter-value');
+    const params = new URLSearchParams(window.location.search);
+    if (type === 'th') {
+      val === 'all' ? params.delete('th') : params.set('th', val);
+    }
+    if (type === 'usage') {
+      val === 'all' ? params.delete('usage') : params.set('usage', val);
+    }
+    updateURL({ th: params.get('th'), usage: params.get('usage'), q: params.get('q') });
+  });
+
+  searchInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const q = e.target.value.trim();
+      const params = new URLSearchParams(window.location.search);
+      updateURL({ th: params.get('th'), usage: params.get('usage'), q: q || undefined });
+    }
+  });
+
+  document.getElementById('search-btn')?.addEventListener('click', () => {
+    const q = searchInput.value.trim();
+    const params = new URLSearchParams(window.location.search);
+    updateURL({ th: params.get('th'), usage: params.get('usage'), q: q || undefined });
+  });
+
+  window.addEventListener('popstate', render);
+  render();
+</script>

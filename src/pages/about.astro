@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="关于">
+  <div class="container mx-auto px-6 pt-16 pb-10 max-w-2xl">
+    <div class="flex items-center gap-2 text-sm mb-4" style="color: var(--text-muted);">
+      <a href="/" class="hover:text-[var(--accent)] transition-colors duration-150">首页</a>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span style="color: var(--text-secondary);">关于</span>
+    </div>
+    <h1 class="section-title text-lg mb-5 text-center">关于本站</h1>
+
+    <div class="card p-6 space-y-6">
+      <section>
+        <h2 class="font-bold text-sm mb-2" style="color: var(--accent); font-family: 'Rajdhani', sans-serif;">这是什么网站？</h2>
+        <p class="text-sm leading-relaxed" style="color: var(--text-secondary);">
+          这是一个部落冲突（Clash of Clans）阵型展示网站。所有阵型均为网络搜集和玩家提供，侵权联删。
+        </p>
+      </section>
+
+      <section>
+        <h2 class="font-bold text-sm mb-2" style="color: var(--accent); font-family: 'Rajdhani', sans-serif;">阵型分类</h2>
+        <ul class="text-sm space-y-1" style="color: var(--text-secondary);">
+          <li><strong>部落战</strong>：专为部落战设计，重点防御三星</li>
+          <li><strong>护资源</strong>：重点保护资源建筑，减少被掠夺</li>
+          <li><strong>护杯</strong>：保护奖杯，防止降杯</li>
+          <li><strong>综合</strong>：兼顾资源和奖杯的平衡设计</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="font-bold text-sm mb-2" style="color: var(--accent); font-family: 'Rajdhani', sans-serif;">更新日志</h2>
+        <p class="text-sm" style="color: var(--text-secondary);"><strong>2026.06</strong> - 网站上线，收录首批阵型</p>
+      </section>
+
+      <section>
+        <h2 class="font-bold text-sm mb-2" style="color: var(--accent); font-family: 'Rajdhani', sans-serif;">免责声明</h2>
+        <p class="text-xs" style="color: var(--text-muted);">本站为个人非官方站点，与Supercell公司无关。Clash of Clans 是 Supercell Oy 的注册商标。</p>
+      </section>
+    </div>
+  </div>
+</Layout>

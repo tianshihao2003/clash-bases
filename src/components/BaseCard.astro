@@ -1,0 +1,81 @@
+---
+interface Props {
+  base: {
+    name: string;
+    slug: string;
+    thLevel: number;
+    usage: 'war' | 'farm' | 'trophy' | 'hybrid';
+    image: string;
+    isFeatured?: boolean;
+    createdAt?: string;
+  };
+}
+
+const { base } = Astro.props;
+
+const usageConfig = {
+  war: { label: '部落战', color: 'var(--red)' },
+  farm: { label: '护资源', color: 'var(--accent)' },
+  trophy: { label: '护杯', color: 'var(--blue)' },
+  hybrid: { label: '综合', color: 'var(--purple)' },
+};
+
+const u = usageConfig[base.usage];
+
+function formatDate(d: string) {
+  if (!d) return '';
+  const date = new Date(d);
+  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+}
+---
+
+<a
+  href={`/bases/${base.slug}`}
+  class="card group block overflow-hidden"
+>
+  <div class="relative overflow-hidden bg-[var(--bg-subtle)]">
+    <img
+      src={base.image}
+      alt={base.name || `${base.thLevel}本 ${u.label}`}
+      class="w-full h-44 object-cover transition-transform duration-500 group-hover:scale-105"
+      loading="lazy"
+    />
+    {base.isFeatured && (
+      <span class="absolute top-2.5 right-2.5 badge" style="background: var(--accent); color: #fff;">
+        精选
+      </span>
+    )}
+    {base.createdAt && (
+      <span class="absolute bottom-2 left-2 text-xs px-1.5 py-0.5 rounded" style="background: rgba(0,0,0,0.5); color: rgba(255,255,255,0.8);">
+        {formatDate(base.createdAt)}
+      </span>
+    )}
+  </div>
+
+  <div class="p-3.5">
+    {base.name ? (
+      <div class="flex items-center justify-between mb-1.5">
+        <h3 class="font-bold text-sm truncate group-hover:text-[var(--accent)] transition-colors duration-150 flex-1 mr-2">
+          {base.name}
+        </h3>
+        <span class="badge flex-shrink-0" style="background: var(--accent-soft); color: var(--accent);">
+          {base.thLevel}本
+        </span>
+      </div>
+    ) : (
+      <div class="flex items-center gap-2 mb-1.5">
+        <span class="badge" style="background: var(--accent-soft); color: var(--accent);">
+          {base.thLevel}本
+        </span>
+        <span class="badge" style={`background: ${u.color}0d; color: ${u.color};`}>
+          {u.label}
+        </span>
+      </div>
+    )}
+    {base.name && (
+      <span class="badge" style={`background: ${u.color}0d; color: ${u.color};`}>
+        {u.label}
+      </span>
+    )}
+  </div>
+</a>

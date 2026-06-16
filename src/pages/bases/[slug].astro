@@ -1,0 +1,84 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BaseCard from '../../components/BaseCard.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const bases = await getCollection('bases');
+  return bases.map((base) => ({
+    params: { slug: base.id },
+    props: { base },
+  }));
+}
+
+const { base } = Astro.props;
+const { Content } = await render(base);
+const displayName = base.data.name;
+
+const allBases = await getCollection('bases');
+const relatedBases = allBases
+  .filter((b) => b.data.thLevel === base.data.thLevel && b.id !== base.id)
+  .slice(0, 3);
+
+const usageLabels: Record<string, string> = { war: '部落战', farm: '护资源', trophy: '护杯', hybrid: '综合' };
+const usageColors: Record<string, string> = { war: 'var(--red)', farm: 'var(--accent)', trophy: 'var(--blue)', hybrid: 'var(--purple)' };
+---
+
+<Layout title={displayName || `${base.data.thLevel}本`}>
+  <div class="container mx-auto px-6 pt-16 pb-10">
+    <div class="flex items-center gap-2 text-sm mb-5" style="color: var(--text-muted);">
+      <a href="/bases" class="hover:text-[var(--accent)] transition-colors duration-150">阵型库</a>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span style="color: var(--text-secondary);">{displayName || `${base.data.thLevel}本`}</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+      <div class="lg:col-span-3 card overflow-hidden">
+        <img src={base.data.image} alt={displayName} class="w-full cursor-pointer hover:scale-[1.01] transition-transform duration-500" id="base-image" />
+      </div>
+
+      <div class="lg:col-span-2 card p-5">
+        <h1 class="text-lg font-bold mb-3" style="font-family: 'Rajdhani', sans-serif;">{displayName || `${base.data.thLevel}本`}</h1>
+
+        <div class="flex items-center gap-2 mb-4">
+          <span class="badge" style="background: var(--accent-soft); color: var(--accent);">{base.data.thLevel}本</span>
+          <span class="badge" style={`background: ${usageColors[base.data.usage]}0d; color: ${usageColors[base.data.usage]};`}>{usageLabels[base.data.usage]}</span>
+        </div>
+
+        {base.body && (
+          <div class="mb-4 prose prose-sm max-w-none" style="color: var(--text-secondary); line-height: 1.75;">
+            <Content />
+          </div>
+        )}
+
+        <div class="flex gap-2 mt-5">
+          <button id="share-btn" class="btn-ghost">分享链接</button>
+          {base.data.copyLink
+            ? <a href={base.data.copyLink} target="_blank" rel="noopener" class="btn-primary">切换阵型</a>
+            : <span class="btn-primary" style="opacity:0.5; cursor:not-allowed;">切换阵型</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    {relatedBases.length > 0 && (
+      <section class="mt-12">
+        <h2 class="section-title mb-5">同级阵型推荐</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {relatedBases.map((b) => <BaseCard base={{ ...b.data, slug: b.id }} />)}
+        </div>
+      </section>
+    )}
+  </div>
+</Layout>
+
+<script>
+  document.getElementById('share-btn')?.addEventListener('click', function() {
+    navigator.clipboard.writeText(window.location.href);
+    this.textContent = '已复制';
+    setTimeout(() => { this.textContent = '分享链接'; }, 2000);
+  });
+  document.getElementById('base-image')?.addEventListener('click', function() {
+    if (this.requestFullscreen) this.requestFullscreen();
+  });
+</script>

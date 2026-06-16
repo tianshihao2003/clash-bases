@@ -1,0 +1,41 @@
+---
+interface Props {
+  currentTh?: number;
+  currentUsage?: string;
+}
+
+const { currentTh, currentUsage } = Astro.props;
+
+const thLevels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+const usages = [
+  { value: 'war', label: '部落战' },
+  { value: 'farm', label: '护资源' },
+  { value: 'trophy', label: '护杯' },
+  { value: 'hybrid', label: '综合' },
+];
+---
+
+<div class="card p-4 mb-6">
+  <div class="mb-4">
+    <h3 class="text-xs font-bold tracking-wider uppercase mb-2.5" style="color: var(--text-muted); font-family: 'Rajdhani', sans-serif;">
+      大本营等级
+    </h3>
+    <div class="flex flex-wrap gap-1.5">
+      <button data-filter-type="th" data-filter-value="all" class="chip chip-active">全部</button>
+      {thLevels.map((level) => (
+        <button data-filter-type="th" data-filter-value={String(level)} class="chip">{level}本</button>
+      ))}
+    </div>
+  </div>
+  <div>
+    <h3 class="text-xs font-bold tracking-wider uppercase mb-2.5" style="color: var(--text-muted); font-family: 'Rajdhani', sans-serif;">
+      阵型用途
+    </h3>
+    <div class="flex flex-wrap gap-1.5">
+      <button data-filter-type="usage" data-filter-value="all" class="chip chip-active">全部</button>
+      {usages.map((u) => (
+        <button data-filter-type="usage" data-filter-value={u.value} class="chip">{u.label}</button>
+      ))}
+    </div>
+  </div>
+</div>

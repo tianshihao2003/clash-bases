@@ -1,0 +1,164 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BaseCard from '../components/BaseCard.astro';
+import { getCollection } from 'astro:content';
+
+const allBases = (await getCollection('bases'))
+  .sort((a, b) => new Date(b.data.createdAt).getTime() - new Date(a.data.createdAt).getTime());
+
+const featuredBases = allBases.filter((b) => b.data.isFeatured);
+const latestBases = allBases.slice(0, 6);
+---
+
+<Layout title="首页">
+  <!-- Hero -->
+  <section class="relative h-[360px] md:h-[600px] overflow-hidden">
+    <img src="/hero-bg.png" alt="" class="absolute inset-0 w-full h-full object-cover" />
+    <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%);"></div>
+    <div class="relative z-10 flex flex-col items-center justify-center h-full px-6 text-center">
+      <h1 class="hero-title mb-2 animate-in">天涯阵型库</h1>
+      <p class="hero-sub mb-6 animate-in" style="animation-delay: 0.1s;">精心设计的阵型，守护你的村庄</p>
+      <div class="animate-in" style="animation-delay: 0.2s;">
+        <a href="/bases" class="btn-primary">浏览阵型库</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Announcement -->
+  <div class="overflow-hidden py-2.5" style="background: var(--bg-subtle); border-bottom: 1px solid var(--border-light);">
+    <div class="flex animate-marquee" style="width: max-content;">
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">[公告] 欢迎来到天涯阵型库，精心设计的阵型守护你的村庄</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">[招人] 站长部落正在重建招人中，20级满都城，24小时🍼</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">站长部落标签：#2GV9R0C9Q</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">[阵型] 护资源、护杯、部落战多种用途任你选择</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">[阵型] 阵型库已加入QQ群二维码在关于页面，欢迎加入</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">[公告] 欢迎来到天涯阵型库，精心设计的阵型守护你的村庄</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">[招人] 站长部落正在重建招人中，20级满都城，24小时🍼</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">站长部落标签：#2GV9R0C9Q</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">[阵型] 护资源、护杯、部落战多种用途任你选择</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">[阵型] 阵型库已加入QQ群二维码在关于页面，欢迎加入</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">[公告] 欢迎来到天涯阵型库，精心设计的阵型守护你的村庄</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">[招人] 站长部落正在重建招人中，20级满都城，24小时🍼</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">站长部落标签：#2GV9R0C9Q</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">[阵型] 护资源、护杯、部落战多种用途任你选择</span>
+      <span class="mx-8 text-sm whitespace-nowrap" style="color: var(--text-secondary);">[阵型] 阵型库已加入QQ群二维码在关于页面，欢迎加入</span>
+    </div>
+  </div>
+  </div>
+  </div>
+
+  <!-- Featured -->
+  {featuredBases.length > 0 && (
+    <section class="container mx-auto px-6 py-12">
+      <h2 class="section-title mb-5">精选阵型</h2>
+      <div class="relative">
+        <div class="overflow-hidden mx-10">
+          <div id="featured-track" class="flex transition-transform duration-400 ease-out">
+            {featuredBases.map((base) => (
+              <div class="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-2">
+                <BaseCard base={{ ...base.data, slug: base.id }} />
+              </div>
+            ))}
+          </div>
+        </div>
+        {featuredBases.length > 1 && (
+          <>
+            <button id="featured-prev" class="absolute left-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-150" style="background: var(--bg-card); border: 1.5px solid var(--text-muted); color: var(--text-secondary); box-shadow: var(--shadow-md);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button id="featured-next" class="absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-150" style="background: var(--bg-card); border: 1.5px solid var(--text-muted); color: var(--text-secondary); box-shadow: var(--shadow-md);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </>
+        )}
+        {featuredBases.length > 1 && (
+          <div class="flex justify-center gap-1.5 mt-4" id="featured-dots">
+            {featuredBases.map((_, i) => (
+              <button class="rounded-full transition-all duration-300" style={i === 0 ? 'background: var(--accent); width: 18px; height: 6px;' : 'background: var(--border); width: 6px; height: 6px;'} data-index={i} />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  {featuredBases.length === 0 && (
+    <section class="container mx-auto px-6 py-12 text-center">
+      <p class="text-sm" style="color: var(--text-muted);">暂无精选阵型，在 src/content/bases/ 中添加 md 文件</p>
+    </section>
+  )}
+
+  <!-- Latest -->
+  {latestBases.length > 0 && (
+    <section class="container mx-auto px-6 pb-12">
+      <h2 class="section-title mb-5">最新阵型</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {latestBases.map((base, i) => (
+          <div class="animate-in" style={`animation-delay: ${i * 0.05}s`}>
+            <BaseCard base={{ ...base.data, slug: base.id }} />
+          </div>
+        ))}
+      </div>
+      <div class="text-center mt-8">
+        <a href="/bases" class="btn-ghost">查看全部阵型 →</a>
+      </div>
+    </section>
+  )}
+</Layout>
+
+<script>
+  const track = document.getElementById('featured-track');
+  const prev = document.getElementById('featured-prev');
+  const next = document.getElementById('featured-next');
+  const dots = document.querySelectorAll('#featured-dots button');
+  const total = dots.length;
+  let current = 0;
+  let autoTimer: number | null = null;
+
+  function getVisible() {
+    if (window.innerWidth >= 1024) return 3;
+    if (window.innerWidth >= 768) return 2;
+    return 1;
+  }
+
+  function goTo(index: number) {
+    const visible = getVisible();
+    if (total <= visible) { current = 0; updateTrack(); return; }
+    current = ((index % total) + total) % total;
+    if (current > total - visible) current = 0;
+    updateTrack();
+  }
+
+  function updateTrack() {
+    if (!track) return;
+    const cards = track.children;
+    if (cards.length === 0) return;
+    const cardWidth = (cards[0] as HTMLElement).offsetWidth;
+    track.style.transition = 'transform 0.4s ease-out';
+    track.style.transform = `translateX(-${current * cardWidth}px)`;
+    dots.forEach((d, i) => {
+      (d as HTMLElement).style.background = i === current ? 'var(--accent)' : 'var(--border)';
+      (d as HTMLElement).style.width = i === current ? '18px' : '6px';
+    });
+  }
+
+  function startAuto() {
+    stopAuto();
+    autoTimer = window.setInterval(() => goTo(current + 1), 3500);
+  }
+
+  function stopAuto() {
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+  }
+
+  prev?.addEventListener('click', () => { goTo(current - 1); startAuto(); });
+  next?.addEventListener('click', () => { goTo(current + 1); startAuto(); });
+  dots.forEach((d) => d.addEventListener('click', () => { goTo(Number(d.getAttribute('data-index'))); startAuto(); }));
+
+  const wrapper = track?.parentElement?.parentElement;
+  wrapper?.addEventListener('mouseenter', stopAuto);
+  wrapper?.addEventListener('mouseleave', startAuto);
+
+  window.addEventListener('resize', updateTrack);
+  startAuto();
+</script>

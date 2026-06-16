@@ -1,0 +1,46 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+const navLinks = [
+  { href: '/', label: '首页' },
+  { href: '/bases', label: '阵型库' },
+  { href: '/about', label: '关于' },
+  { href: '/contact', label: '联系我' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="fixed top-0 left-0 right-0 z-50" style="background: rgba(255,255,255,0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-light);">
+  <nav class="container mx-auto px-6 h-14 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent);">
+        <path d="M14.5 17.5L3 6V3h3l11.5 11.5"/>
+        <path d="M13 19l6-6"/>
+        <path d="M16 16l4 4"/>
+      </svg>
+      <span class="text-sm font-bold tracking-wider" style="font-family: 'Rajdhani', sans-serif; color: var(--text);">
+        天涯阵型库
+      </span>
+    </a>
+
+    <div class="flex items-center gap-1">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-150',
+            currentPath === link.href
+              ? 'text-[var(--accent)] bg-[var(--accent-soft)]'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text)]',
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+      <div class="ml-2 pl-2" style="border-left: 1px solid var(--border-light);">
+        <ThemeToggle />
+      </div>
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="联系我">
+  <div class="container mx-auto px-6 pt-20 pb-10 max-w-2xl">
+    <div class="flex items-center gap-2 text-sm mb-4" style="color: var(--text-muted);">
+      <a href="/" class="hover:text-[var(--accent)] transition-colors duration-150">首页</a>
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span style="color: var(--text-secondary);">联系我</span>
+    </div>
+    <h1 class="section-title text-lg mb-6 text-center">联系我</h1>
+
+    <h2 class="font-bold text-sm mb-3 text-center" style="color: var(--accent); font-family: 'Rajdhani', sans-serif;">加入QQ群</h2>
+    <div class="card p-6">
+      <div class="flex flex-col items-center">
+        <img src="/qq-group.jpg" alt="QQ群二维码" class="w-64 h-64 rounded-lg object-contain mb-3" style="border: 1px solid var(--border);" />
+        <p class="text-sm mb-3" style="color: var(--text-secondary);">群号：<strong>956398886</strong></p>
+        <div class="flex gap-2">
+          <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=ghENE5m9jzPLCfI7Im7tXZQ%2BO0DwNNZjNH9vpv0NB%2FymjlyZcP9CwhpK%2BOlQjCIA&busi_data=eyJncm91cENvZGUiOiI5NTYzOTg4ODYiLCJ0b2tlbiI6IjJyZWp4OFpOMUkvYVNkMnNQUmU0ZFpDeitwY2FwRExVUjhPM3NUTlJBTkJtL09uY3VmV0llank3dlU1SU12TVUiLCJ1aW4iOiIzMTA5NTgxNTA3In0%3D&data=ezcPlfqWZOsGcCLR-lg6dQu3MCWBDS6lyGRZGXBFDi9xrlDU4hB2v1XwVQk5d9wwbnKYAmobUpvuPZbSMk3nTw&svctype=4&tempid=h5_group_info" target="_blank" rel="noopener" class="btn-primary">加入群聊</a>
+          <button id="copy-group" class="btn-ghost">复制群号</button>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="font-bold text-sm mt-8 mb-3 text-center" style="color: var(--accent); font-family: 'Rajdhani', sans-serif;">我的部落</h2>
+    <div class="card p-6">
+      <div class="flex flex-col items-center">
+        <img src="/clan.jpg" alt="部落截图" class="w-64 rounded-lg object-contain mb-3" style="border: 1px solid var(--border);" />
+        <p class="text-sm mb-3" style="color: var(--text-secondary);">部落标签：<strong>#2GV9R0C9Q</strong></p>
+        <button id="copy-tag" class="btn-ghost">复制标签</button>
+      </div>
+    </div>
+    <h2 class="font-bold text-sm mt-8 mb-3 text-center" style="color: var(--accent); font-family: 'Rajdhani', sans-serif;">赞助支持</h2>
+    <div class="card p-6">
+      <div class="flex flex-col items-center">
+        <p class="text-sm mb-3" style="color: var(--text-secondary);">如果觉得本站有用，可以请作者喝杯咖啡 ☕</p>
+        <img src="/sponsor.png" alt="赞助二维码" class="w-[640px] max-w-full rounded-lg object-contain mb-3" style="border: 1px solid var(--border);" />
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.getElementById('copy-group')?.addEventListener('click', function() {
+    navigator.clipboard.writeText('956398886');
+    this.textContent = '已复制';
+    setTimeout(() => { this.textContent = '复制群号'; }, 2000);
+  });
+  document.getElementById('copy-tag')?.addEventListener('click', function() {
+    navigator.clipboard.writeText('#2GV9R0C9Q');
+    this.textContent = '已复制';
+    setTimeout(() => { this.textContent = '复制标签'; }, 2000);
+  });
+</script>
